@@ -11,6 +11,10 @@ namespace Entities
         public Guid Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public string QrCode { get; set; } 
+        public string QrCode { get; set; }
+        public string QRCodeToken { get; set; } 
+        public DateTime QRCodeExpiryTime { get; set; }
+        public ICollection<AttendanceRecord> AttendanceRecords { get; set; }
+
     }
 }

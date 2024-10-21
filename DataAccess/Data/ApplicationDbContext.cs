@@ -22,3 +22,4 @@ namespace DataAccess.Data
             modelBuilder.Entity<AttendanceRecord>().HasKey(a => a.Id);
         }
     }
+}

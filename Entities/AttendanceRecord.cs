@@ -12,5 +12,6 @@ namespace Entities
         public Guid EmployeeId { get; set; }
         public DateTime EntryTime { get; set; }
         public DateTime? ExitTime { get; set; }
+        public Employee Employee { get; set; }
     }
 }
