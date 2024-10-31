@@ -10,8 +10,9 @@ namespace Entities
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public DateTime EntryTime { get; set; }
-        public DateTime? ExitTime { get; set; }
         public Employee Employee { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string ActionType { get; set; } // Giriş veya Çıkış
+        public string Location { get; set; } //  konum bilgisi
     }
 }
