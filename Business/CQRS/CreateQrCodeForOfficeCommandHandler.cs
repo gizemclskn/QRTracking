@@ -1,6 +1,7 @@
 ﻿using Business.CQRS.Commands;
 using DataAccess.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using System;
 using System.Collections.Generic;
@@ -13,24 +14,27 @@ namespace Business.CQRS
 {
     public class CreateQrCodeForOfficeCommandHandler : IRequestHandler<CreateQrCodeForOfficeCommand, bool>
     {
-        private readonly InMemoryDbContext _context;
+        private readonly AppDbContext _context;
 
-        public CreateQrCodeForOfficeCommandHandler(InMemoryDbContext context)
+        public CreateQrCodeForOfficeCommandHandler(AppDbContext context)
         {
             _context = context;
         }
 
-        public Task<bool> Handle(CreateQrCodeForOfficeCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CreateQrCodeForOfficeCommand request, CancellationToken cancellationToken)
         {
-            var office = _context.Offices.FirstOrDefault(o => o.Id == request.OfficeId);
-            if (office == null) return Task.FromResult(false);
+            var office = await _context.Offices.FirstOrDefaultAsync(o => o.Id == request.OfficeId, cancellationToken);
+            if (office == null) return false;
 
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(office.Id.ToString(), QRCodeGenerator.ECCLevel.Q);
             var qrCode = new Base64QRCode(qrCodeData);
             office.QrCode = qrCode.GetGraphic(20);
 
-            return Task.FromResult(true);
+            _context.Offices.Update(office);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return true;
         }
     }
 }

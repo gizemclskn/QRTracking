@@ -28,7 +28,11 @@ namespace Business.CQRS
 
             // Konum doğrulama
             var office = employee.Office;
-            // Konum doğrulama işlemleri burada yapılır...
+            if (request.Location != office.Location)
+            {
+                
+                return false; 
+            }
 
             var record = new AttendanceRecord
             {

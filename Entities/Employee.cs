@@ -15,6 +15,7 @@ namespace Entities
         public string LastName { get; set; }
         public Guid OfficeId { get; set; }
         public Office Office { get; set; }
+        public string Location { get; set; }
 
     }
 }

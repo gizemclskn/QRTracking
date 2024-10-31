@@ -12,8 +12,7 @@ namespace Entities
         public string Name { get; set; }
         public string Address { get; set; }
         public string QrCode { get; set; } // QR Kod URL veya Base64 kodu
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public string Location { get; set; }
         public ICollection<Employee> Employees { get; set; }
     }
 }
