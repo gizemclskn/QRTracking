@@ -1,4 +1,5 @@
-﻿using DataAccess.Data;
+﻿using Business.CQRS.Commands;
+using DataAccess.Data;
 using Entities;
 using MediatR;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.CQRS.Commands
+namespace Business.CQRS
 {
     public class RegisterQrScanCommandHandler : IRequestHandler<RegisterQrScanCommand, bool>
     {

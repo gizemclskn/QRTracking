@@ -17,7 +17,6 @@ namespace API.Controllers
         }
 
         [HttpPost("register-entry")]
-        [Authorize]
         public async Task<IActionResult> RegisterEntry([FromBody] RegisterEntryCommand command)
         {
             var result = await _mediator.Send(command);
@@ -27,7 +26,6 @@ namespace API.Controllers
         }
 
         [HttpPost("register-exit")]
-        [Authorize]
         public async Task<IActionResult> RegisterExit([FromBody] RegisterExitCommand command)
         {
             var result = await _mediator.Send(command);
@@ -35,5 +33,6 @@ namespace API.Controllers
                 return Ok("Exit registered successfully.");
             return BadRequest("Failed to register exit.");
         }
+
     }
 }

@@ -1,9 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Business.CQRS.Commands;
-using Business.CQRS; 
+﻿using Business.CQRS.Commands;
+using DataAccess.Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -12,37 +11,48 @@ namespace API.Controllers
     public class OfficeController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly AppDbContext _context;
 
-        public OfficeController(IMediator mediator)
+        public OfficeController(IMediator mediator, AppDbContext context)
         {
             _mediator = mediator;
+            _context = context;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateOffice([FromBody] CreateOfficeCommand command)
+        [HttpPost]
+        public async Task<IActionResult> CreateOffice(CreateOfficeCommand command)
         {
-            var result = await _mediator.Send(command);
-            if (result)
-                return Ok("Office created successfully.");
-            return BadRequest("Failed to create office.");
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        [HttpPost("{officeId}/generate-qr")]
-        public async Task<IActionResult> GenerateQrCode(Guid officeId)
-        {
-            var result = await _mediator.Send(new CreateQrCodeForOfficeCommand { OfficeId = officeId });
-            if (result)
-                return Ok("QR Code generated successfully.");
-            return BadRequest("Failed to generate QR code.");
-        }
+ 
+            var officeId = await _mediator.Send(command);
 
-        [HttpGet("{officeId}")]
-        public async Task<IActionResult> GetOfficeDetails(Guid officeId)
-        {
-            var result = await _mediator.Send(new GetOfficeDetailsQuery { OfficeId = officeId });
-            if (result == null)
-                return NotFound("Office not found.");
-            return Ok(result);
+       
+            var qrCodeCommand = new CreateQrCodeForOfficeCommand(officeId);
+            await _mediator.Send(qrCodeCommand);
+
+            var office = await _context.Offices.FindAsync(officeId);
+            if (office == null)
+            {
+                return NotFound();
+            }
+
+            return CreatedAtAction(nameof(GetOfficeById), new { id = officeId }, office);
         }
+ [HttpGet("{id}")]
+        public async Task<IActionResult> GetOfficeById(Guid id)
+        {
+            var office = await _context.Offices.FindAsync(id);
+            if (office == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(office); 
+        }
+       
     }
 }

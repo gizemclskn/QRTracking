@@ -4,11 +4,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-
 
 namespace Business.CQRS
 {
@@ -29,7 +26,7 @@ namespace Business.CQRS
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(office.Id.ToString(), QRCodeGenerator.ECCLevel.Q);
             var qrCode = new Base64QRCode(qrCodeData);
-            office.QrCode = qrCode.GetGraphic(20);
+            office.QrCode = qrCode.GetGraphic(20); 
 
             _context.Offices.Update(office);
             await _context.SaveChangesAsync(cancellationToken);

@@ -10,7 +10,11 @@ namespace Business.CQRS.Commands
     public class CreateQrCodeForOfficeCommand : IRequest<bool>
     {
         public Guid OfficeId { get; set; }
-    }
 
+        public CreateQrCodeForOfficeCommand(Guid officeId)
+        {
+            OfficeId = officeId;
+        }
+    }
 
 }
